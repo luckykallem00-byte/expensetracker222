@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinancePro | Expense Tracker Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem 2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #1e293b;
+        }
+
+        .header p {
+            color: #64748b;
+            margin-top: 5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .logout-btn {
+            background: #ef4444;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+
+        .weather-widget {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            padding: 1rem 1.5rem;
+            border-radius: 15px;
+            color: white;
+            text-align: right;
+        }
+
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .income-bg { background: #dcfce7; color: #10b981; }
+        .expense-bg { background: #fee2e2; color: #ef4444; }
+        .balance-bg { background: #e0e7ff; color: #4f46e5; }
+        .budget-bg { background: #fed7aa; color: #f97316; }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1e293b;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
+
+        .btn-income { background: #10b981; color: white; }
+        .btn-expense { background: #ef4444; color: white; }
+        .btn-budget { background: #f59e0b; color: white; }
+        .btn-reminder { background: #8b5cf6; color: white; }
+        .btn-export { background: #1e293b; color: white; }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #e2e8f0;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .card-header h3 {
+            font-size: 1.2rem;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Transaction List */
+        .transaction-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem;
+            border-bottom: 1px solid #f1f5f9;
+            transition: background 0.3s;
+        }
+
+        .transaction-item:hover {
+            background: #f8fafc;
+        }
+
+        .transaction-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .badge-income { background: #dcfce7; color: #10b981; }
+        .badge-expense { background: #fee2e2; color: #ef4444; }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: #94a3b8;
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 6px;
+            transition: all 0.3s;
+        }
+
+        .delete-btn:hover {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: white;
+            margin: 5% auto;
+            width: 90%;
+            max-width: 500px;
+            border-radius: 20px;
+            animation: slideDown 0.3s;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            font-size: 1.3rem;
+            color: #1e293b;
+        }
+
+        .close {
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #94a3b8;
+            transition: all 0.3s;
+        }
+
+        .close:hover {
+            color: #ef4444;
+            transform: scale(1.1);
+        }
+
+        .form-group {
+            padding: 1rem 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #1e293b;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1rem;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102,126,234,0.1);
+        }
+
+        .submit-btn {
+            width: calc(100% - 3rem);
+            margin: 0 1.5rem 1.5rem;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102,126,234,0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #94a3b8;
+        }
+
+        .action-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin: 1rem 1.5rem 0;
+        }
+
+        .action-tab {
+            flex: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: #f1f5f9;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+
+        .action-tab.active {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 5px;
+            display: block;
+        }
+
+        .reminder-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 0.75rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 0.5rem;
+        }
+
+        .reminder-checkbox {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .reminder-info {
+            flex: 1;
+        }
+
+        .reminder-title {
+            font-weight: 600;
+        }
+
+        .reminder-date {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .alert-item {
+            padding: 0.75rem;
+            margin-bottom: 0.5rem;
+            border-radius: 10px;
+            font-size: 0.9rem;
+        }
+
+        .alert-warning { background: #fef9e3; border-left: 3px solid #f59e0b; }
+        .alert-critical { background: #fee2e2; border-left: 3px solid #ef4444; }
+        .alert-success { background: #dcfce7; border-left: 3px solid #10b981; }
+        .alert-info { background: #e0e7ff; border-left: 3px solid #4f46e5; }
+
+        .category-item, .budget-item {
+            margin-bottom: 1rem;
+        }
+
+        .category-header, .budget-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.3s;
+        }
+
+        .two-columns {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .action-buttons {
+                flex-direction: column;
+            }
+            .two-columns {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header with User Info -->
+        <div class="header">
+            <div>
+                <h1>💰 FinancePro Expense Tracker</h1>
+                <p>Welcome back, <span id="user-name-display">User</span>! Track your finances</p>
+            </div>
+            <div class="user-info">
+                <div class="weather-widget">
+                    <div>🌤️ Hyderabad</div>
+                    <div style="font-size: 1.2rem; font-weight: bold;">29°C</div>
+                </div>
+                <button class="logout-btn" onclick="logout()">
+                    <i class="ri-logout-box-line"></i> Logout
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card" onclick="openIncomeModal()">
+                <div class="stat-icon income-bg">💰</div>
+                <div class="stat-value" id="total-income">₹ 0</div>
+                <div class="stat-label">Total Income (Click to manage)</div>
+            </div>
+            <div class="stat-card" onclick="openExpenseModal()">
+                <div class="stat-icon expense-bg">💸</div>
+                <div class="stat-value" id="total-expense">₹ 0</div>
+                <div class="stat-label">Total Expense (Click to manage)</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon balance-bg">🏦</div>
+                <div class="stat-value" id="balance">₹ 0</div>
+                <div class="stat-label">Available Balance</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon budget-bg">📊</div>
+                <div class="stat-value" id="budget-used">0%</div>
+                <div class="stat-label">Budget Used</div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <button class="btn btn-income" onclick="openIncomeModal()">💰 Manage Income</button>
+            <button class="btn btn-expense" onclick="openExpenseModal()">💸 Manage Expenses</button>
+            <button class="btn btn-budget" onclick="openBudgetModal()">🎯 Set Budgets</button>
+            <button class="btn btn-reminder" onclick="openReminderModal()">🔔 Add Reminder</button>
+            <button class="btn btn-export" onclick="exportData()">📥 Export Data</button>
+        </div>
+
+        <!-- Two Column Layout -->
+        <div class="two-columns">
+            <!-- Recent Transactions -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="ri-history-line"></i> Recent Transactions</h3>
+                </div>
+                <div id="transactions-list"></div>
+            </div>
+
+            <!-- Reminders -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="ri-notification-line"></i> Upcoming Reminders</h3>
+                    <button onclick="openReminderModal()" style="background: none; border: none; color: #667eea; cursor: pointer;">+ Add</button>
+                </div>
+                <div id="reminders-list"></div>
+            </div>
+        </div>
+
+        <!-- Alerts -->
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="ri-alert-line"></i> Smart Alerts</h3>
+                <button onclick="clearAlerts()" style="background: none; border: none; color: #667eea; cursor: pointer;">Clear All</button>
+            </div>
+            <div id="alerts-list"></div>
+        </div>
+
+        <!-- Two Column Layout for Budgets & Categories -->
+        <div class="two-columns">
+            <!-- Monthly Budgets -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="ri-pie-chart-2-line"></i> Monthly Budgets</h3>
+                    <button onclick="openBudgetModal()" style="background: none; border: none; color: #667eea; cursor: pointer;">+ Add</button>
+                </div>
+                <div id="budgets-list"></div>
+            </div>
+
+            <!-- Expenses by Category -->
+            <div class="card">
+                <div class="card-header">
+                    <h3><i class="ri-pie-chart-line"></i> Expenses by Category</h3>
+                </div>
+                <div id="category-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Income Modal -->
+    <div id="income-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💰 Manage Income</h2>
+                <span class="close" onclick="closeIncomeModal()">&times;</span>
+            </div>
+            <div class="action-tabs">
+                <button class="action-tab active" onclick="setIncomeAction('add')">➕ Add</button>
+                <button class="action-tab" onclick="setIncomeAction('subtract')">➖ Subtract</button>
+                <button class="action-tab" onclick="setIncomeAction('set')">✏️ Set Exact</button>
+            </div>
+            <form id="income-form">
+                <div class="form-group">
+                    <label id="income-label">Amount to Add (₹)</label>
+                    <input type="number" id="income-amount" placeholder="Enter amount" required>
+                    <small class="form-hint" id="income-hint">Current Income: ₹ 0</small>
+                </div>
+                <div class="form-group">
+                    <label>Description (Optional)</label>
+                    <input type="text" id="income-desc" placeholder="e.g., Salary, Bonus">
+                </div>
+                <button type="submit" class="submit-btn">Update Income</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Expense Modal -->
+    <div id="expense-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>💸 Manage Expenses</h2>
+                <span class="close" onclick="closeExpenseModal()">&times;</span>
+            </div>
+            <div class="action-tabs">
+                <button class="action-tab active" onclick="setExpenseAction('add')">➕ Add New</button>
+                <button class="action-tab" onclick="setExpenseAction('subtract')">➖ Subtract</button>
+                <button class="action-tab" onclick="setExpenseAction('set')">✏️ Modify</button>
+            </div>
+            <form id="expense-form">
+                <div class="form-group" id="expense-select-group" style="display: none;">
+                    <label>Select Expense</label>
+                    <select id="expense-select" class="form-input"></select>
+                </div>
+                <div class="form-group">
+                    <label id="expense-label">Amount (₹)</label>
+                    <input type="number" id="expense-amount" placeholder="Enter amount" required>
+                    <small class="form-hint" id="expense-hint">Current Total Expense: ₹ 0</small>
+                </div>
+                <div class="form-group" id="expense-category-group">
+                    <label>Category</label>
+                    <select id="expense-category">
+                        <option value="Food & Dining">🍔 Food & Dining</option>
+                        <option value="Rent">🏠 Rent</option>
+                        <option value="Utilities">💡 Utilities</option>
+                        <option value="Transport">🚗 Transport</option>
+                        <option value="Entertainment">🎬 Entertainment</option>
+                        <option value="Shopping">🛍️ Shopping</option>
+                        <option value="Healthcare">💊 Healthcare</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Other">📦 Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <input type="text" id="expense-desc" placeholder="e.g., Grocery shopping" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="expense-date" required>
+                </div>
+                <button type="submit" class="submit-btn">Update Expenses</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Budget Modal -->
+    <div id="budget-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🎯 Set Category Budget</h2>
+                <span class="close" onclick="closeBudgetModal()">&times;</span>
+            </div>
+            <form id="budget-form">
+                <div class="form-group">
+                    <label>Category</label>
+                    <select id="budget-category">
+                        <option value="Food & Dining">🍔 Food & Dining</option>
+                        <option value="Rent">🏠 Rent</option>
+                        <option value="Utilities">💡 Utilities</option>
+                        <option value="Transport">🚗 Transport</option>
+                        <option value="Entertainment">🎬 Entertainment</option>
+                        <option value="Shopping">🛍️ Shopping</option>
+                        <option value="Healthcare">💊 Healthcare</option>
+                        <option value="Education">📚 Education</option>
+                        <option value="Other">📦 Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Monthly Budget (₹)</label>
+                    <input type="number" id="budget-amount" required placeholder="Enter budget amount">
+                </div>
+                <button type="submit" class="submit-btn">Set Budget</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Reminder Modal -->
+    <div id="reminder-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>🔔 Add Reminder</h2>
+                <span class="close" onclick="closeReminderModal()">&times;</span>
+            </div>
+            <form id="reminder-form">
+                <div class="form-group">
+                    <label>Title</label>
+                    <input type="text" id="reminder-title" placeholder="e.g., Rent Payment" required>
+                </div>
+                <div class="form-group">
+                    <label>Date</label>
+                    <input type="date" id="reminder-date" required>
+                </div>
+                <div class="form-group">
+                    <label>Type</label>
+                    <select id="reminder-type">
+                        <option value="Bill">💰 Bill Payment</option>
+                        <option value="Subscription">📺 Subscription</option>
+                        <option value="Savings">🎯 Savings Goal</option>
+                        <option value="Other">📌 Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Amount (Optional)</label>
+                    <input type="number" id="reminder-amount" placeholder="Amount in ₹">
+                </div>
+                <button type="submit" class="submit-btn">Add Reminder</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // ==================== AUTHENTICATION ====================
+        let currentUser = null;
+        
+        // Check if user is logged in
+        try {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+            }
+            if (!currentUser) {
+                window.location.href = 'login.html';
+            }
+        } catch(e) {
+            window.location.href = 'login.html';
+        }
+        
+        // Display user name
+        if (currentUser) {
+            document.getElementById('user-name-display').innerText = currentUser.name || 'User';
+        }
+        
+        // Logout function
+        function logout() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+            }
+        }
+
+        // ==================== DATA STORAGE ====================
+        let totalIncome = 0;
+        let expenses = [];
+        let budgets = {
+            'Food & Dining': 5000,
+            'Rent': 15000,
+            'Utilities': 3000,
+            'Transport': 1000,
+            'Entertainment': 2000,
+            'Shopping': 2000,
+            'Healthcare': 1000,
+            'Education': 2000,
+            'Other': 1000
+        };
+        let reminders = [];
+        let alerts = [];
+        let transactions = [];
+        
+        let currentIncomeAction = 'add';
+        let currentExpenseAction = 'add';
+
+        // Load user-specific data
+        function loadUserData() {
+            if (!currentUser) return;
+            
+            const savedData = localStorage.getItem(`user_${currentUser.id}_data`);
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                totalIncome = data.totalIncome || 0;
+                expenses = data.expenses || [];
+                budgets = data.budgets || {
+                    'Food & Dining': 5000, 'Rent': 15000, 'Utilities': 3000,
+                    'Transport': 1000, 'Entertainment': 2000, 'Shopping': 2000,
+                    'Healthcare': 1000, 'Education': 2000, 'Other': 1000
+                };
+                reminders = data.reminders || [];
+                alerts = data.alerts || [];
+                transactions = data.transactions || [];
+            }
+            updateDashboard();
+        }
+
+        // Save user-specific data
+        function saveUserData() {
+            if (!currentUser) return;
+            
+            const userData = {
+                totalIncome: totalIncome,
+                expenses: expenses,
+                budgets: budgets,
+                reminders: reminders,
+                alerts: alerts,
+                transactions: transactions
+            };
+            
+            localStorage.setItem(`user_${currentUser.id}_data`, JSON.stringify(userData));
+        }
+
+        function loadData() {
+            loadUserData();
+        }
+
+        function saveData() {
+            saveUserData();
+        }
+
+        function addToHistory(type, description, category, amount) {
+            transactions.unshift({
+                id: Date.now(),
+                type: type,
+                description: description,
+                category: category,
+                amount: type === 'income' ? amount : -amount,
+                date: new Date().toISOString().split('T')[0]
+            });
+            if (transactions.length > 50) transactions = transactions.slice(0, 50);
+            saveData();
+        }
+
+        function addAlert(type, title, message) {
+            alerts.unshift({ 
+                id: Date.now(), 
+                title: title, 
+                message: message, 
+                type: type, 
+                date: new Date().toISOString() 
+            });
+            if (alerts.length > 10) alerts = alerts.slice(0, 10);
+            saveData();
+            updateAlertsList();
+        }
+
+        // Income Management
+        function setIncomeAction(action) {
+            currentIncomeAction = action;
+            let label = document.getElementById('income-label');
+            let hint = document.getElementById('income-hint');
+            if (action === 'add') {
+                label.innerHTML = 'Amount to Add (₹)';
+                hint.innerHTML = `Current Income: ₹ ${totalIncome.toLocaleString('en-IN')}`;
+            } else if (action === 'subtract') {
+                label.innerHTML = 'Amount to Subtract (₹)';
+                hint.innerHTML = `Current Income: ₹ ${totalIncome.toLocaleString('en-IN')}`;
+            } else {
+                label.innerHTML = 'New Income Amount (₹)';
+                hint.innerHTML = `Current Income: ₹ ${totalIncome.toLocaleString('en-IN')}`;
+            }
+            let tabs = document.querySelectorAll('#income-modal .action-tab');
+            tabs.forEach((tab, i) => {
+                if ((i === 0 && action === 'add') || (i === 1 && action === 'subtract') || (i === 2 && action === 'set')) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+
+        // Income Form Submit Event Listener
+        const incomeForm = document.getElementById('income-form');
+        if (incomeForm) {
+            incomeForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                let amount = parseFloat(document.getElementById('income-amount').value);
+                let description = document.getElementById('income-desc').value;
+                
+                if (isNaN(amount) || amount <= 0) { 
+                    alert('Please enter a valid amount'); 
+                    return; 
+                }
+                
+                if (currentIncomeAction === 'add') {
+                    totalIncome += amount;
+                    if (description) addToHistory('income', description, 'Income', amount);
+                    addAlert('success', 'Income Added', `₹ ${amount.toLocaleString('en-IN')} added`);
+                } else if (currentIncomeAction === 'subtract') {
+                    if (amount > totalIncome) { 
+                        alert('Cannot subtract more than current income!'); 
+                        return; 
+                    }
+                    totalIncome -= amount;
+                    if (description) addToHistory('expense', description, 'Income Reduction', amount);
+                    addAlert('warning', 'Income Reduced', `₹ ${amount.toLocaleString('en-IN')} subtracted`);
+                } else {
+                    totalIncome = amount;
+                    addAlert('info', 'Income Updated', `Income set to ₹ ${amount.toLocaleString('en-IN')}`);
+                }
+                saveData();
+                updateDashboard();
+                closeIncomeModal();
+                document.getElementById('income-amount').value = '';
+                document.getElementById('income-desc').value = '';
+            });
+        }
+
+        // Expense Management
+        function setExpenseAction(action) {
+            currentExpenseAction = action;
+            let selectGroup = document.getElementById('expense-select-group');
+            if (action === 'add') {
+                selectGroup.style.display = 'none';
+            } else {
+                selectGroup.style.display = 'block';
+                let select = document.getElementById('expense-select');
+                if (select) {
+                    select.innerHTML = '<option value="">Select an expense</option>' + 
+                        expenses.map(e => `<option value="${e.id}">${e.category} - ₹ ${e.amount.toLocaleString('en-IN')}</option>`).join('');
+                }
+            }
+            let tabs = document.querySelectorAll('#expense-modal .action-tab');
+            tabs.forEach((tab, i) => {
+                if ((i === 0 && action === 'add') || (i === 1 && action === 'subtract') || (i === 2 && action === 'set')) {
+                    tab.classList.add('active');
+                } else {
+                    tab.classList.remove('active');
+                }
+            });
+        }
+
+        // Expense Form Submit Event Listener
+        const expenseForm = document.getElementById('expense-form');
+        if (expenseForm) {
+            expenseForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let amount = parseFloat(document.getElementById('expense-amount').value);
+                let description = document.getElementById('expense-desc').value;
+                let date = document.getElementById('expense-date').value;
+                if (isNaN(amount) || amount <= 0) { 
+                    alert('Please enter a valid amount'); 
+                    return; 
+                }
+                let totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+                let balance = totalIncome - totalExpense;
+                
+                if (currentExpenseAction === 'add') {
+                    let category = document.getElementById('expense-category').value;
+                    if (amount > balance) { 
+                        alert('Insufficient balance!'); 
+                        return; 
+                    }
+                    expenses.push({ 
+                        id: Date.now(), 
+                        category: category, 
+                        amount: amount, 
+                        date: date, 
+                        description: description 
+                    });
+                    addToHistory('expense', description, category, amount);
+                    addAlert('warning', 'Expense Added', `₹ ${amount.toLocaleString('en-IN')} added to ${category}`);
+                } else if (currentExpenseAction === 'subtract') {
+                    let id = parseInt(document.getElementById('expense-select').value);
+                    let expense = expenses.find(e => e.id === id);
+                    if (!expense) { alert('Please select an expense'); return; }
+                    if (amount > expense.amount) { 
+                        alert('Cannot subtract more than the expense amount!'); 
+                        return; 
+                    }
+                    expenses = expenses.map(e => e.id === id ? { ...e, amount: e.amount - amount } : e).filter(e => e.amount > 0);
+                    addToHistory('expense', `Subtract from ${expense.category}`, expense.category, amount);
+                    addAlert('info', 'Expense Reduced', `₹ ${amount.toLocaleString('en-IN')} subtracted`);
+                } else {
+                    let id = parseInt(document.getElementById('expense-select').value);
+                    let category = document.getElementById('expense-category').value;
+                    let expense = expenses.find(e => e.id === id);
+                    if (!expense) { alert('Please select an expense'); return; }
+                    let oldAmount = expense.amount;
+                    let difference = amount - oldAmount;
+                    if (difference > 0 && difference > balance) { 
+                        alert('Insufficient balance!'); 
+                        return; 
+                    }
+                    expenses = expenses.map(e => e.id === id ? { ...e, category: category, amount: amount, date: date, description: description } : e);
+                    addToHistory('expense', `Modified: ${description}`, category, amount);
+                    addAlert('info', 'Expense Modified', `${category} updated`);
+                }
+                saveData();
+                updateDashboard();
+                closeExpenseModal();
+                document.getElementById('expense-amount').value = '';
+                document.getElementById('expense-desc').value = '';
+                document.getElementById('expense-date').value = new Date().toISOString().split('T')[0];
+            });
+        }
+
+        // Budget Form Submit Event Listener
+        const budgetForm = document.getElementById('budget-form');
+        if (budgetForm) {
+            budgetForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let category = document.getElementById('budget-category').value;
+                let amount = parseFloat(document.getElementById('budget-amount').value);
+                if (isNaN(amount) || amount <= 0) { 
+                    alert('Please enter valid amount'); 
+                    return; 
+                }
+                budgets[category] = amount;
+                saveData();
+                updateDashboard();
+                closeBudgetModal();
+                addAlert('info', 'Budget Set', `${category} budget set to ₹ ${amount.toLocaleString('en-IN')}`);
+            });
+        }
+
+        // Reminder Form Submit Event Listener
+        const reminderForm = document.getElementById('reminder-form');
+        if (reminderForm) {
+            reminderForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                let title = document.getElementById('reminder-title').value;
+                let date = document.getElementById('reminder-date').value;
+                let type = document.getElementById('reminder-type').value;
+                let amount = document.getElementById('reminder-amount').value;
+                if (!title || !date) { 
+                    alert('Please fill all fields'); 
+                    return; 
+                }
+                reminders.push({ 
+                    id: Date.now(), 
+                    title: title, 
+                    date: date, 
+                    type: type, 
+                    amount: amount ? parseFloat(amount) : null, 
+                    completed: false 
+                });
+                saveData();
+                updateDashboard();
+                closeReminderModal();
+                document.getElementById('reminder-form').reset();
+                addAlert('success', 'Reminder Added', `${title} set for ${date}`);
+            });
+        }
+
+        // Delete functions
+        function deleteTransaction(id) {
+            if (confirm('Delete this transaction?')) {
+                transactions = transactions.filter(t => t.id !== id);
+                saveData();
+                updateTransactionsList();
+            }
+        }
+
+        function completeReminder(id) {
+            reminders = reminders.map(r => r.id === id ? { ...r, completed: true } : r);
+            saveData();
+            updateRemindersList();
+        }
+
+        function deleteReminder(id) {
+            if (confirm('Delete this reminder?')) {
+                reminders = reminders.filter(r => r.id !== id);
+                saveData();
+                updateRemindersList();
+            }
+        }
+
+        function clearAlerts() {
+            alerts = [];
+            saveData();
+            updateAlertsList();
+        }
+
+        function exportData() {
+            let data = { totalIncome, expenses, budgets, reminders, transactions };
+            let blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            let url = URL.createObjectURL(blob);
+            let a = document.createElement('a');
+            a.href = url;
+            a.download = `finance_data_${new Date().toISOString().split('T')[0]}.json`;
+            a.click();
+            URL.revokeObjectURL(url);
+            addAlert('success', 'Data Exported', 'Your data has been exported');
+        }
+
+        // Update Dashboard
+        function updateDashboard() {
+            let totalExpense = expenses.reduce((sum, e) => sum + e.amount, 0);
+            let balance = totalIncome - totalExpense;
+            let totalBudget = Object.values(budgets).reduce((sum, b) => sum + b, 0);
+            let budgetUsed = totalBudget > 0 ? ((totalExpense / totalBudget) * 100).toFixed(1) : 0;
+            
+            document.getElementById('total-income').innerHTML = `₹ ${totalIncome.toLocaleString('en-IN')}`;
+            document.getElementById('total-expense').innerHTML = `₹ ${totalExpense.toLocaleString('en-IN')}`;
+            document.getElementById('balance').innerHTML = `₹ ${balance.toLocaleString('en-IN')}`;
+            document.getElementById('budget-used').innerHTML = `${budgetUsed}%`;
+            
+            updateTransactionsList();
+            updateCategoriesList();
+            updateBudgetsList();
+            updateRemindersList();
+            updateAlertsList();
+            
+            let incomeHint = document.getElementById('income-hint');
+            let expenseHint = document.getElementById('expense-hint');
+            if (incomeHint) incomeHint.innerHTML = `Current Income: ₹ ${totalIncome.toLocaleString('en-IN')}`;
+            if (expenseHint) expenseHint.innerHTML = `Current Total Expense: ₹ ${totalExpense.toLocaleString('en-IN')}`;
+        }
+
+        function updateTransactionsList() {
+            let container = document.getElementById('transactions-list');
+            if (!container) return;
+            if (transactions.length === 0) {
+                container.innerHTML = '<div class="empty-state">No transactions yet</div>';
+                return;
+            }
+            container.innerHTML = transactions.slice(0, 5).map(t => `
+                <div class="transaction-item">
+                    <div>
+                        <span class="transaction-badge ${t.amount > 0 ? 'badge-income' : 'badge-expense'}">
+                            ${t.amount > 0 ? 'Income' : 'Expense'}
+                        </span> 
+                        ${t.description}
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span class="${t.amount > 0 ? 'badge-income' : 'badge-expense'}">
+                            ${t.amount > 0 ? '+' : '-'}₹ ${Math.abs(t.amount).toLocaleString('en-IN')}
+                        </span>
+                        <button class="delete-btn" onclick="deleteTransaction(${t.id})">🗑️</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateCategoriesList() {
+            let container = document.getElementById('category-list');
+            if (!container) return;
+            let categoryMap = {};
+            expenses.forEach(e => { categoryMap[e.category] = (categoryMap[e.category] || 0) + e.amount; });
+            let totalExpense = Object.values(categoryMap).reduce((sum, v) => sum + v, 0);
+            let colors = { 
+                'Food & Dining': '#10b981', 'Rent': '#ef4444', 'Utilities': '#3b82f6', 
+                'Transport': '#f97316', 'Entertainment': '#8b5cf6', 'Shopping': '#ec489a', 
+                'Healthcare': '#06b6d4', 'Education': '#84cc16', 'Other': '#6b7280' 
+            };
+            
+            if (Object.keys(categoryMap).length === 0) {
+                container.innerHTML = '<div class="empty-state">No expenses yet</div>';
+                return;
+            }
+            container.innerHTML = Object.entries(categoryMap).map(([cat, amt]) => {
+                let percent = totalExpense > 0 ? ((amt / totalExpense) * 100).toFixed(1) : 0;
+                return `
+                    <div class="category-item">
+                        <div class="category-header">
+                            <span>${cat}</span>
+                            <span>₹ ${amt.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${percent}%; background: ${colors[cat] || '#6b7280'}"></div>
+                        </div>
+                        <div style="font-size: 0.7rem; margin-top: 4px;">${percent}% of total</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateBudgetsList() {
+            let container = document.getElementById('budgets-list');
+            if (!container) return;
+            let spending = {};
+            expenses.forEach(e => { spending[e.category] = (spending[e.category] || 0) + e.amount; });
+            if (Object.keys(budgets).length === 0) {
+                container.innerHTML = '<div class="empty-state">No budgets set</div>';
+                return;
+            }
+            container.innerHTML = Object.entries(budgets).map(([cat, budget]) => {
+                let spent = spending[cat] || 0;
+                let percent = (spent / budget * 100).toFixed(1);
+                let color = percent >= 90 ? '#ef4444' : (percent >= 70 ? '#f59e0b' : '#10b981');
+                return `
+                    <div class="budget-item">
+                        <div class="budget-header">
+                            <span>${cat}</span>
+                            <span>₹ ${spent.toLocaleString('en-IN')} / ₹ ${budget.toLocaleString('en-IN')}</span>
+                        </div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: ${Math.min(percent, 100)}%; background: ${color}"></div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateRemindersList() {
+            let container = document.getElementById('reminders-list');
+            if (!container) return;
+            let upcoming = reminders.filter(r => !r.completed && new Date(r.date) >= new Date()).sort((a,b) => new Date(a.date) - new Date(b.date));
+            if (upcoming.length === 0) {
+                container.innerHTML = '<div class="empty-state">No upcoming reminders</div>';
+                return;
+            }
+            container.innerHTML = upcoming.map(r => `
+                <div class="reminder-item">
+                    <input type="checkbox" class="reminder-checkbox" onchange="completeReminder(${r.id})">
+                    <div class="reminder-info">
+                        <div class="reminder-title">${r.title}</div>
+                        <div class="reminder-date">📅 ${new Date(r.date).toLocaleDateString('en-IN')} • ${r.type}</div>
+                    </div>
+                    <button class="delete-btn" onclick="deleteReminder(${r.id})">🗑️</button>
+                </div>
+            `).join('');
+        }
+
+        function updateAlertsList() {
+            let container = document.getElementById('alerts-list');
+            if (!container) return;
+            if (alerts.length === 0) {
+                container.innerHTML = '<div class="empty-state">No alerts</div>';
+                return;
+            }
+            container.innerHTML = alerts.map(a => `
+                <div class="alert-item alert-${a.type}">
+                    <strong>${a.title}</strong><br>
+                    ${a.message}<br>
+                    <small>${new Date(a.date).toLocaleDateString('en-IN')}</small>
+                </div>
+            `).join('');
+        }
+
+        // Modal functions
+        function openIncomeModal() { 
+            let modal = document.getElementById('income-modal');
+            if (modal) modal.style.display = 'block'; 
+            setIncomeAction('add'); 
+            let input = document.getElementById('income-amount');
+            if (input) input.value = '';
+        }
+        
+        function closeIncomeModal() { 
+            let modal = document.getElementById('income-modal');
+            if (modal) modal.style.display = 'none'; 
+        }
+        
+        function openExpenseModal() { 
+            let modal = document.getElementById('expense-modal');
+            if (modal) modal.style.display = 'block'; 
+            setExpenseAction('add'); 
+            let amountInput = document.getElementById('expense-amount');
+            let dateInput = document.getElementById('expense-date');
+            if (amountInput) amountInput.value = '';
+            if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+        }
+        
+        function closeExpenseModal() { 
+            let modal = document.getElementById('expense-modal');
+            if (modal) modal.style.display = 'none'; 
+        }
+        
+        function openBudgetModal() { 
+            let modal = document.getElementById('budget-modal');
+            if (modal) modal.style.display = 'block'; 
+            let input = document.getElementById('budget-amount');
+            if (input) input.value = '';
+        }
+        
+        function closeBudgetModal() { 
+            let modal = document.getElementById('budget-modal');
+            if (modal) modal.style.display = 'none'; 
+        }
+        
+        function openReminderModal() { 
+            let modal = document.getElementById('reminder-modal');
+            if (modal) modal.style.display = 'block'; 
+            let dateInput = document.getElementById('reminder-date');
+            if (dateInput) dateInput.value = new Date().toISOString().split('T')[0];
+            let titleInput = document.getElementById('reminder-title');
+            let amountInput = document.getElementById('reminder-amount');
+            if (titleInput) titleInput.value = '';
+            if (amountInput) amountInput.value = '';
+        }
+        
+        function closeReminderModal() { 
+            let modal = document.getElementById('reminder-modal');
+            if (modal) modal.style.display = 'none'; 
+        }
+
+        // Close modals on outside click
+        window.onclick = function(e) {
+            if (e.target.classList.contains('modal')) {
+                e.target.style.display = 'none';
+            }
+        }
+
+        // Initialize
+        loadData();
+    </script>
+</body>
+</html>

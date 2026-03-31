@@ -1,0 +1,14 @@
+{
+  "name": "financepro-expense-tracker",
+  "version": "1.0.0",
+  "description": "FinancePro Expense Tracker",
+  "main": "server.js",
+  "scripts": {
+    "dev": "node server.js",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.22.1",
+    "open": "^9.1.0"
+  }
+}
