@@ -1,14 +1,12 @@
 {
   "name": "financepro-expense-tracker",
   "version": "1.0.0",
-  "description": "FinancePro Expense Tracker",
-  "main": "server.js",
+  "description": "FinancePro expense tracker with Firebase client",
   "scripts": {
-    "dev": "node server.js",
-    "start": "node server.js"
+    "start": "node backend/server.js"
   },
   "dependencies": {
-    "express": "^4.22.1",
-    "open": "^9.1.0"
+    "dotenv": "^16.3.1",
+    "express": "^4.22.1"
   }
 }

@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Expense Tracker</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+        .register-wrapper { max-width: 520px; width: 100%; animation: fadeInUp 0.6s ease; }
+        .register-card { background: white; border-radius: 30px; padding: 2.5rem; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        .logo { text-align: center; margin-bottom: 1.8rem; }
+        .logo-icon { width: 80px; height: 80px; background: linear-gradient(135deg, #667eea, #764ba2); border-radius: 25px; display: inline-flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+        .logo-icon i { font-size: 2.8rem; color: white; }
+        .logo h1 { font-size: 2rem; background: linear-gradient(135deg, #667eea, #764ba2); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 0.5rem; }
+        .logo .tagline { color: #64748b; }
+        .info-card { background: #f8fafc; border-radius: 20px; padding: 1.4rem; margin-bottom: 1.5rem; color: #334155; }
+        .action-btn { width: 100%; padding: 14px; border-radius: 14px; border: none; background: #667eea; color: white; font-size: 1rem; font-weight: 600; cursor: pointer; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .action-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(102, 126, 234, 0.2); }
+        .back-link { text-align: center; margin-top: 1.5rem; color: #64748b; }
+        .back-link a { color: #667eea; text-decoration: none; font-weight: 600; }
+        .back-link a:hover { text-decoration: underline; }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        @media (max-width: 480px) { .register-card { padding: 1.5rem; } .logo h1 { font-size: 1.7rem; } }
+    </style>
+</head>
+<body>
+    <div class="register-wrapper">
+        <div class="register-card">
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="ri-user-add-line"></i>
+                </div>
+                <h1>FinancePro</h1>
+                <p class="tagline">Create access by signing in with Google</p>
+            </div>
+            <div class="info-card">
+                <p>Registration is handled automatically when you sign in with Google. Click the button below to create access and continue.</p>
+            </div>
+            <button id="google-signin-btn" class="action-btn">
+                <i class="ri-google-line"></i>
+                Sign in with Google
+            </button>
+            <button class="action-btn" style="margin-top: 1rem; background: #475569;" onclick="window.location.href='login.html'">
+                Back to Login
+            </button>
+            <div class="back-link">
+                <p>Already have an account? <a href="login.html">Sign in with Google</a></p>
+            </div>
+        </div>
+    </div>
+    <script type="module">
+        import { initFirebase, signInWithGoogle, getAuthUser } from '/js/auth.js';
+
+        window.addEventListener('DOMContentLoaded', async () => {
+            await initFirebase();
+            const activeUser = getAuthUser();
+            if (activeUser) {
+                window.location.href = 'index.html';
+                return;
+            }
+
+            document.getElementById('google-signin-btn').addEventListener('click', async () => {
+                try {
+                    await signInWithGoogle();
+                } catch (error) {
+                    console.error(error);
+                    alert(error.message || 'Google sign-in failed.');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
