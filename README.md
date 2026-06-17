@@ -32,7 +32,11 @@ The backend listens by default on `http://localhost:4000`.
 ## Frontend setup
 
 1. Open `frontend/.env.example` and create `frontend/.env`.
-2. Add your Firebase client config values and `VITE_API_BASE_URL`.
+2. Add your Firebase client config values and set `VITE_API_BASE_URL` to your backend URL (example below):
+
+```
+VITE_API_BASE_URL=https://expensetracker222-1.onrender.com
+```
 3. Install dependencies:
 
 ```bash
