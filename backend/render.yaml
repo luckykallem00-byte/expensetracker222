@@ -1,0 +1,17 @@
+services:
+  - type: web
+    name: expense-tracker-backend
+    env: node
+    plan: free
+    region: oregon
+    buildCommand: "npm install"
+    startCommand: "npm start"
+    envVars:
+      - key: PORT
+        value: "${PORT}"
+      - key: FRONTEND_URL
+        value: "${FRONTEND_URL}"
+      - key: FIREBASE_DATABASE_URL
+        value: "${FIREBASE_DATABASE_URL}"
+      - key: FIREBASE_SERVICE_ACCOUNT_KEY
+        value: "${FIREBASE_SERVICE_ACCOUNT_KEY}"

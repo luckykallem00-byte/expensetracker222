@@ -1,47 +1,72 @@
 # ExpenseTracker222
 
-A minimal expense tracker using Firebase Authentication and Firebase Realtime Database.
+This repository now contains a split React frontend and Node/Express backend with Firebase Realtime Database access through Firebase Admin.
 
-## Project structure
+## Architecture
 
-- `/frontend` - Static HTML, CSS, and JavaScript files for authentication and dashboard
-- `.env` - Local environment variables for Firebase settings (client config)
+- `/frontend` - React + Vite application for authentication and UI.
+- `/backend` - Express REST API using Firebase Admin SDK.
+- `database.rules.json` - Firebase Realtime Database security rules.
+- `/legacy` - legacy static frontend and server files; not used by the new architecture.
 
-## Features
+## Backend setup
 
-- Google sign-in via Firebase Authentication
-- Firebase Realtime Database storage for user expenses
-- Frontend dashboard dynamically loads user expenses
-- Local budget, reminder, and alert support on the frontend
-
-## Setup
-
-1. Install dependencies:
+1. Open `backend/.env.example` and create `backend/.env`.
+2. Set `FIREBASE_SERVICE_ACCOUNT_KEY` to the service account JSON or its base64-encoded JSON.
+3. Set `FIREBASE_DATABASE_URL` to your Realtime Database URL.
+4. Install dependencies:
 
 ```bash
+cd backend
 npm install
 ```
 
-2. Create a `.env` file from `.env.example` and fill in your Firebase client config values.
-
-3. Start the server:
+5. Start the backend:
 
 ```bash
-npm start
+npm run dev
 ```
 
-4. Open the app in your browser:
+The backend listens by default on `http://localhost:4000`.
 
-```text
-http://localhost:3000
+## Frontend setup
+
+1. Open `frontend/.env.example` and create `frontend/.env`.
+2. Add your Firebase client config values and `VITE_API_BASE_URL`.
+3. Install dependencies:
+
+```bash
+cd frontend
+npm install
 ```
 
-## Firebase setup
+4. Start the frontend:
 
-- Enable Google Authentication in Firebase Authentication.
-- Create a Realtime Database and set its rules to allow authenticated reads and writes.
+```bash
+npm run dev
+```
 
-## Notes
+The frontend development server runs on `http://localhost:5173`.
 
-- The frontend fetches Firebase client config from `/api/config`.
-- The server reads the Firebase config from `.env` and does not hardcode keys in `auth.js`.
+## Firebase rules
+
+The `database.rules.json` file enforces that users can only read and write their own data under `users/<uid>/`.
+
+To deploy rules with Firebase CLI:
+
+```bash
+firebase deploy --only database
+```
+
+Or use the Firebase Console and paste the rules from `database.rules.json`.
+
+## What changed
+
+- Frontend is now a proper React/Vite app.
+- Backend is now a Node/Express API protected by Firebase ID token verification.
+- Expenses are stored in Realtime Database under `users/<uid>/expenses`.
+- No frontend direct database access: all expense and category calls go through `/api/*`.
+
+## Cleanup note
+
+The `/legacy` folder and old vanilla `frontend/*.html` assets are still present for reference but are not part of the new React architecture.
